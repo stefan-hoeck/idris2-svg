@@ -30,11 +30,19 @@ displayAttributes = fastConcat . intersperse " " . mapMaybe displayAttribute
 --------------------------------------------------------------------------------
 
 export %inline
-cx : LengthOrPercentage -> SVGAttribute Circle
+class : String -> SVGAttribute t
+class = Str "class"
+
+export %inline
+classes : List String -> SVGAttribute t
+classes = Str "class" . unwords
+
+export %inline
+cx : (0 prf : HasCX t) => LengthOrPercentage -> SVGAttribute t
 cx = Str "cx" . interpolate
 
 export %inline
-cy : LengthOrPercentage -> SVGAttribute Circle
+cy : (0 prf : HasCX t) => LengthOrPercentage -> SVGAttribute t
 cy = Str "cy" . interpolate
 
 export %inline
@@ -42,11 +50,35 @@ r : LengthOrPercentage -> SVGAttribute Circle
 r = Str "r" . interpolate
 
 export %inline
-x : LengthOrPercentage -> SVGAttribute t
+x1 : LengthOrPercentage -> SVGAttribute Line
+x1 = Str "x1" . interpolate
+
+export %inline
+y1 : LengthOrPercentage -> SVGAttribute Line
+y1 = Str "y1" . interpolate
+
+export %inline
+x2 : LengthOrPercentage -> SVGAttribute Line
+x2 = Str "x2" . interpolate
+
+export %inline
+y2 : LengthOrPercentage -> SVGAttribute Line
+y2 = Str "y2" . interpolate
+
+export %inline
+rx : (0 prf : HasRX t) => LengthOrPercentage -> SVGAttribute t
+rx = Str "rx" . interpolate
+
+export %inline
+ry : (0 prf : HasRY t) => LengthOrPercentage -> SVGAttribute t
+ry = Str "ry" . interpolate
+
+export %inline
+x : (0 prf : HasX t) => LengthOrPercentage -> SVGAttribute t
 x = Str "x" . interpolate
 
 export %inline
-y : LengthOrPercentage -> SVGAttribute t
+y : (0 prf : HasY t) => LengthOrPercentage -> SVGAttribute t
 y = Str "y" . interpolate
 
 export %inline
@@ -62,16 +94,31 @@ fill : SVGColor -> SVGAttribute t
 fill = Str "fill" . interpolate
 
 export %inline
-stroke : SVGColor -> SVGAttribute t
+stroke : (0 p : HasStroke t) => SVGColor -> SVGAttribute t
 stroke = Str "stroke" . interpolate
 
 export %inline
-width : LengthOrPercentage -> SVGAttribute t
+width : (0 prf : HasWidth t) => LengthOrPercentage -> SVGAttribute t
 width = Str "width" . interpolate
 
 export %inline
-height : LengthOrPercentage -> SVGAttribute t
+height : (0 prf : HasHeight t) => LengthOrPercentage -> SVGAttribute t
 height = Str "height" . interpolate
+
+export %inline
+strokeWidth : (0 p : HasStroke t) => LengthOrPercentage -> SVGAttribute t
+strokeWidth = Str "stroke-width" . interpolate
+
+export
+points : (0 p : HasPoints t) => List Double -> SVGAttribute t
+points = Str "points" . unwords . map show
+
+export
+viewBox :
+     {auto 0 prf : HasViewBox t}
+  -> (minX, minY, width, height : LengthOrPercentage)
+  -> SVGAttribute t
+viewBox mx my w h = Str "viewBox" "\{mx} \{my} \{w} \{h}"
 
 export %inline
 xmlns : String -> SVGAttribute SVG
