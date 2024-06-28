@@ -6,6 +6,10 @@ version    = 0.7.0
 sourcedir  = "src"
 depends    = base         >= 0.7.0
            , elab-util
+           , refined
 
 modules = Text.SVG
+        , Text.SVG.Attribute
         , Text.SVG.Node
+        , Text.SVG.Tag
+        , Text.SVG.Types
