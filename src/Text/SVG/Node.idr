@@ -40,7 +40,7 @@ image : List (SVGAttribute Image) -> SVGNode
 image = el _
 
 export %inline
-line : List (SVGAttribute Line) -> SVGNode
+line : List (SVGAttribute Tag.Line) -> SVGNode
 line = el _
 
 export %inline
@@ -103,7 +103,7 @@ escape = fastConcat . map esc . unpack
     esc '\t'         = "\t"
     esc c            = if c < ' ' then "" else singleton c
 
-attrs : List (SVGAttribute t) -> String
+attrs : {0 t : _} -> List (SVGAttribute t) -> String
 attrs as = let s = displayAttributes as in if null s then "" else " " ++ s
 
 export

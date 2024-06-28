@@ -114,59 +114,76 @@ export %inline
 --------------------------------------------------------------------------------
 
 public export
+data Number : Type where
+  I : Int32 -> Number
+  D : Double -> Number
+
+export %inline
+FromDouble Number where fromDouble = D
+
+export %inline
+fromInteger : Integer -> Number
+fromInteger = I . cast
+
+export
+Interpolation Number where
+  interpolate (I i) = show i
+  interpolate (D d) = show d
+
+public export
 data Length : Type where
-  U        : Double -> Length
-  Pt       : Double -> Length
-  Px       : Double -> Length
-  Mm       : Double -> Length
-  Cm       : Double -> Length
+  U        : Number -> Length
+  Pt       : Number -> Length
+  Px       : Number -> Length
+  Mm       : Number -> Length
+  Cm       : Number -> Length
 
 export
 Interpolation Length where
-  interpolate (U x)  =  show x
-  interpolate (Pt x)  = show x ++ "pt"
-  interpolate (Px x)  = show x ++ "px"
-  interpolate (Mm x)  = show x ++ "mm"
-  interpolate (Cm x)  = show x ++ "cm"
+  interpolate (U x)  =  interpolate x
+  interpolate (Pt x)  = interpolate x ++ "pt"
+  interpolate (Px x)  = interpolate x ++ "px"
+  interpolate (Mm x)  = interpolate x ++ "mm"
+  interpolate (Cm x)  = interpolate x ++ "cm"
 
 export %inline
-u : Cast Length a => Double -> a
+u : Cast Length a => Number -> a
 u = cast . U
 
 export %inline
-mm : Cast Length a => Double -> a
+mm : Cast Length a => Number -> a
 mm = cast . Mm
 
 export %inline
-cm : Cast Length a => Double -> a
+cm : Cast Length a => Number -> a
 cm = cast . Cm
 
 export %inline
-px : Cast Length a => Double -> a
+px : Cast Length a => Number -> a
 px = cast . Px
 
 export %inline
-pt : Cast Length a => Double -> a
+pt : Cast Length a => Number -> a
 pt = cast . Pt
 
 export %inline
-(.u) : Cast Length a => Double -> a
+(.u) : Cast Length a => Number -> a
 (.u) = cast . U
 
 export %inline
-(.mm) : Cast Length a => Double -> a
+(.mm) : Cast Length a => Number -> a
 (.mm) = cast . Mm
 
 export %inline
-(.cm) : Cast Length a => Double -> a
+(.cm) : Cast Length a => Number -> a
 (.cm) = cast . Cm
 
 export %inline
-(.px) : Cast Length a => Double -> a
+(.px) : Cast Length a => Number -> a
 (.px) = cast . Px
 
 export %inline
-(.pt) : Cast Length a => Double -> a
+(.pt) : Cast Length a => Number -> a
 (.pt) = cast . Pt
 
 --------------------------------------------------------------------------------
@@ -190,8 +207,113 @@ export %inline
 Cast Length LengthOrPercentage where cast = Len
 
 --------------------------------------------------------------------------------
+--          Paths
+--------------------------------------------------------------------------------
+
+public export
+data PathCmd : Type where
+  Move  : (rel : Bool) -> (x,y : Number) -> PathCmd
+  Line  : (rel : Bool) -> (x,y : Number) -> PathCmd
+  Horiz : (rel : Bool) -> (x : Number) -> PathCmd
+  Vert  : (rel : Bool) -> (y : Number) -> PathCmd
+  Z     : PathCmd
+  Quadr : (rel : Bool) -> (x1,y1,x,y : Number) -> PathCmd
+  QSucc : (rel : Bool) -> (x,y : Number) -> PathCmd
+  Cubic : (rel : Bool) -> (x1,y1,x2,y2,x,y : Number) -> PathCmd
+  CSucc : (rel : Bool) -> (x2,y2,x,y : Number) -> PathCmd
+
+letter : Bool -> String -> String -> String
+letter False u l = u
+letter True  u l = l
+
+export
+Interpolation PathCmd where
+  interpolate (Move rel x y) = letter rel "M" "m" ++ "\{x} \{y}"
+  interpolate (Line rel x y) = letter rel "M" "m" ++ "\{x} \{y}"
+  interpolate (Horiz rel x)  = letter rel "H" "h" ++ "\{x}"
+  interpolate (Vert rel y)   = letter rel "V" "v" ++ "\{y}"
+  interpolate Z              = "Z"
+  interpolate (QSucc rel x y) =
+    letter rel "T" "t" ++ "\{x} \{y}"
+  interpolate (CSucc rel x2 y2 x y) =
+    letter rel "S" "s" ++ "\{x2} \{y2},\{x} \{y}"
+  interpolate (Quadr rel x1 y1 x y) =
+    letter rel "Q" "q" ++ "\{x1} \{y1},\{x} \{y}"
+  interpolate (Cubic rel x1 y1 x2 y2 x y) =
+    letter rel "C" "c" ++ "\{x1} \{y1},\{x2} \{y2},\{x} \{y}"
+
+namespace Path
+  export %inline
+  M : (x,y : Number) -> PathCmd
+  M = Move False
+
+  export %inline
+  m : (x,y : Number) -> PathCmd
+  m = Move True
+
+  export %inline
+  L : (x,y : Number) -> PathCmd
+  L = Line False
+
+  export %inline
+  l : (x,y : Number) -> PathCmd
+  l = Line True
+
+  export %inline
+  H : (x : Number) -> PathCmd
+  H = Horiz False
+
+  export %inline
+  h : (x : Number) -> PathCmd
+  h = Horiz True
+
+  export %inline
+  V : (x : Number) -> PathCmd
+  V = Vert False
+
+  export %inline
+  v : (x : Number) -> PathCmd
+  v = Vert True
+
+  export %inline
+  S : (x2,y2,x,y : Number) -> PathCmd
+  S = CSucc False
+
+  export %inline
+  s : (x2,y2,x,y : Number) -> PathCmd
+  s = CSucc True
+
+  export %inline
+  C : (x1,y1,x2,y2,x,y : Number) -> PathCmd
+  C = Cubic False
+
+  export %inline
+  c : (x1,y1,x2,y2,x,y : Number) -> PathCmd
+  c = Cubic True
+
+  export %inline
+  T : (x,y : Number) -> PathCmd
+  T = QSucc False
+
+  export %inline
+  t : (x,y : Number) -> PathCmd
+  t = QSucc True
+
+  export %inline
+  Q : (x1,y1,x,y : Number) -> PathCmd
+  Q = Quadr False
+
+  export %inline
+  q : (x1,y1,x,y : Number) -> PathCmd
+  q = Quadr True
+
+--------------------------------------------------------------------------------
 --          X11 Colors (https://www.w3.org/TR/css3-color/#svg-color)
 --------------------------------------------------------------------------------
+
+export
+none : SVGColor
+none = Key "none"
 
 export
 aliceblue : SVGColor

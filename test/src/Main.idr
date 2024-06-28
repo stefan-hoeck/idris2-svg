@@ -38,6 +38,12 @@ ex2 =
         , fill transparent
         , strokeWidth 5.u
         ]
+    , path
+        [ d [M 20 230, Q 40 205 50 230, T 90 230]
+        , fill none
+        , stroke blue
+        , strokeWidth 5.u
+        ]
     ]
 --
 --   <path d="M20,230 Q40,205 50,230 T90,230" fill="none" stroke="blue" stroke-width="5"/>
