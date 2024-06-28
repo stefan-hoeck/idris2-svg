@@ -1,5 +1,6 @@
 module Main
 
+import Text.SVG.Attribute as A
 import Text.SVG
 
 %default total
@@ -45,8 +46,30 @@ ex2 =
         , strokeWidth 5.u
         ]
     ]
---
---   <path d="M20,230 Q40,205 50,230 T90,230" fill="none" stroke="blue" stroke-width="5"/>
+
+visualizeCubic : (a,b,x1,y1,x2,y2,x,y : Number) -> List SVGNode
+visualizeCubic a b x1 y1 x2 y2 x y =
+  [ path
+      [ d [ M a b, C x1 y1 x2 y2 x y], fill none, stroke black, strokeWidth 5.u ]
+  , g [stroke red, strokeWidth 2.u]
+      [ line   [ A.x1 a.u, A.y1 b.u, A.x2 x1.u, A.y2 y1.u]
+      , line   [ A.x1 x2.u, A.y1 y2.u, A.x2 x.u, A.y2 y.u]
+      ]
+  , g [fill red, stroke none]
+      [ circle [ A.cx a.u, A.cy b.u, A.r 5.u]
+      , circle [ A.cx x1.u, A.cy y1.u, A.r 5.u]
+      , circle [ A.cx x2.u, A.cy y2.u, A.r 5.u]
+      , circle [ A.cx x.u, A.cy y.u, A.r 5.u]
+      ]
+  ]
+
+ex3 : SVGNode
+ex3 =
+  svg
+    [ xmlns_2000, width 1000.u, height 1000.u ] $
+    visualizeCubic 10 10 50 100 150 100 190 10 ++
+    visualizeCubic 10 200 50 300 190 300 190 200 ++
+    visualizeCubic 10 400 50 500 250 500 190 400
 
 main : IO ()
-main = putStrLn (render ex2)
+main = putStrLn (render ex3)
