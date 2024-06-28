@@ -38,6 +38,10 @@ classes : List String -> SVGAttribute t
 classes = Str "class" . unwords
 
 export %inline
+d : List PathCmd -> SVGAttribute Path
+d = Str "d" . unwords . map interpolate
+
+export %inline
 cx : (0 prf : HasCX t) => LengthOrPercentage -> SVGAttribute t
 cx = Str "cx" . interpolate
 
@@ -50,19 +54,19 @@ r : LengthOrPercentage -> SVGAttribute Circle
 r = Str "r" . interpolate
 
 export %inline
-x1 : LengthOrPercentage -> SVGAttribute Line
+x1 : LengthOrPercentage -> SVGAttribute Tag.Line
 x1 = Str "x1" . interpolate
 
 export %inline
-y1 : LengthOrPercentage -> SVGAttribute Line
+y1 : LengthOrPercentage -> SVGAttribute Tag.Line
 y1 = Str "y1" . interpolate
 
 export %inline
-x2 : LengthOrPercentage -> SVGAttribute Line
+x2 : LengthOrPercentage -> SVGAttribute Tag.Line
 x2 = Str "x2" . interpolate
 
 export %inline
-y2 : LengthOrPercentage -> SVGAttribute Line
+y2 : LengthOrPercentage -> SVGAttribute Tag.Line
 y2 = Str "y2" . interpolate
 
 export %inline
@@ -110,8 +114,8 @@ strokeWidth : (0 p : HasStroke t) => LengthOrPercentage -> SVGAttribute t
 strokeWidth = Str "stroke-width" . interpolate
 
 export
-points : (0 p : HasPoints t) => List Double -> SVGAttribute t
-points = Str "points" . unwords . map show
+points : (0 p : HasPoints t) => List Number -> SVGAttribute t
+points = Str "points" . unwords . map interpolate
 
 export
 viewBox :
