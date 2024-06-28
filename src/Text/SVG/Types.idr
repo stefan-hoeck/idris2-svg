@@ -754,6 +754,10 @@ tomato : SVGColor
 tomato = Key "tomato"
 
 export
+transparent : SVGColor
+transparent = Key "transparent"
+
+export
 turquoise : SVGColor
 turquoise = Key "turquoise"
 
