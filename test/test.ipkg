@@ -1,0 +1,9 @@
+package svg-test
+
+authors    = "stefan-hoeck"
+version    = 0.7.0
+sourcedir  = "src"
+depends    = svg
+
+executable = "svg-test"
+main       = Main

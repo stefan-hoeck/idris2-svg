@@ -1,0 +1,5 @@
+[custom.all.svg]
+type   = "local"
+path   = "."
+ipkg   = "svg.ipkg"
+test   = "test/test.ipkg"

@@ -1,0 +1,11 @@
+package svg
+
+authors    = "stefan-hoeck"
+brief      = "Vector graphics in Idris2"
+version    = 0.7.0
+sourcedir  = "src"
+depends    = base         >= 0.7.0
+           , elab-util
+
+modules = Text.SVG
+        , Text.SVG.Node
