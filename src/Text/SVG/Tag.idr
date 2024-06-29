@@ -101,6 +101,7 @@ data HasFill : (t : SVGTag s) -> Type where
   HasFillPolygon  : HasFill Polygon
   HasFillPolyline : HasFill Polyline
   HasFillRect     : HasFill Rect
+  HasFillSVG      : HasFill SVG
   HasFillText     : HasFill Text
 
 ||| Proof that the given element can have a `stroke` attribute
@@ -114,6 +115,7 @@ data HasStroke : (t : SVGTag s) -> Type where
   HasStrokePolygon  : HasStroke Polygon
   HasStrokePolyline : HasStroke Polyline
   HasStrokeRect     : HasStroke Rect
+  HasStrokeSVG      : HasStroke SVG
   HasStrokeText     : HasStroke Text
 
 ||| Proof that the given element can have a `width` attribute
@@ -149,3 +151,4 @@ data IsText : (t : SVGTag s) -> Type where
   IsTextText  : IsText Text
   IsTextTSpan : IsText TSpan
   IsTextGroup : IsText Group
+  IsTextSVG   : IsText SVG
