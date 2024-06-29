@@ -54,8 +54,8 @@ y2 : LengthOrPercentage -> SVGAttribute Tag.Line
 y2 = Str "y2" . interpolate
 
 export %inline
-textAnchor : String -> SVGAttribute Text
-textAnchor = Str "text-anchor"
+textAnchor : TextAnchor -> SVGAttribute Text
+textAnchor = Str "text-anchor" . interpolate
 
 export %inline
 xmlns : String -> SVGAttribute SVG
@@ -105,12 +105,28 @@ parameters {0 s : String}
   y = Str "y" . interpolate
 
   export %inline
-  fill : SVGColor -> SVGAttribute t
+  fill : (0 p : HasFill t) => SVGColor -> SVGAttribute t
   fill = Str "fill" . interpolate
+
+  export %inline
+  fillOpacity : (0 p : HasFill t) => Percentage -> SVGAttribute t
+  fillOpacity = Str "fill-opacity" . interpolate
 
   export %inline
   stroke : (0 p : HasStroke t) => SVGColor -> SVGAttribute t
   stroke = Str "stroke" . interpolate
+
+  export %inline
+  strokeLinecap : (0 p : HasStroke t) => StrokeLinecap -> SVGAttribute t
+  strokeLinecap = Str "stroke-linecap" . interpolate
+
+  export %inline
+  strokeLinejoin : (0 p : HasStroke t) => StrokeLinejoin -> SVGAttribute t
+  strokeLinejoin = Str "stroke-linejoin" . interpolate
+
+  export %inline
+  strokeOpacity : (0 p : HasStroke t) => Percentage -> SVGAttribute t
+  strokeOpacity = Str "stroke-opacity" . interpolate
 
   export %inline
   width : (0 prf : HasWidth t) => LengthOrPercentage -> SVGAttribute t

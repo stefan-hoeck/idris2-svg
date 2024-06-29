@@ -89,6 +89,19 @@ data HasHeight : (t : SVGTag s) -> Type where
   HasHeightSVG     : HasHeight SVG
   HasHeightUse     : HasHeight Use
 
+||| Proof that the given element can have a `fill` attribute
+public export
+data HasFill : (t : SVGTag s) -> Type where
+  HasFillCircle   : HasFill Circle
+  HasFillEllipse  : HasFill Ellipse
+  HasFillGroup    : HasFill Group
+  HasFillLine     : HasFill Line
+  HasFillPath     : HasFill Path
+  HasFillPolygon  : HasFill Polygon
+  HasFillPolyline : HasFill Polyline
+  HasFillRect     : HasFill Rect
+  HasFillText     : HasFill Text
+
 ||| Proof that the given element can have a `stroke` attribute
 public export
 data HasStroke : (t : SVGTag s) -> Type where

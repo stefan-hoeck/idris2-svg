@@ -11,7 +11,7 @@ ex1 =
     [ xmlns_2000, width 300.u, height 200.u, viewBox 20.u 30.u 100.u 50.u ]
     [ rect [width 300.u, height 200.u, fill red]
     , circle [cx 150.u, cy 100.u, r 80.u, fill green]
-    , text [x 150.u, y 125.u, fontSize 60.u, textAnchor "middle", fill white] "SVG"
+    , text [x 150.u, y 125.u, fontSize 60.u, textAnchor Middle, fill white] "SVG"
     ]
 
 grp2 : SVGColor -> List SVGNode -> SVGNode
