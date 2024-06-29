@@ -23,6 +23,7 @@ data SVGTag : String -> Type where
   SVG          : SVGTag "svg"
   Symbol       : SVGTag "symbol"
   Text         : SVGTag "text"
+  TSpan        : SVGTag "tspan"
   Use          : SVGTag "use"
   View         : SVGTag "view"
 
@@ -136,8 +137,15 @@ data HasViewBox : (t : SVGTag s) -> Type where
   HasViewBoxSymbol  : HasViewBox Symbol
   HasViewBoxView    : HasViewBox View
 
-||| Proof that the given element can have a `poins` attribute
+||| Proof that the given element can have a `points` attribute
 public export
 data HasPoints : (t : SVGTag s) -> Type where
   HasPointsPolygon  : HasPoints Polygon
   HasPointsPolyline  : HasPoints Polyline
+
+||| Proof that the given element displays some text
+public export
+data IsText : (t : SVGTag s) -> Type where
+  IsTextText  : IsText Text
+  IsTextTSpan : IsText TSpan
+  IsTextGroup : IsText Group

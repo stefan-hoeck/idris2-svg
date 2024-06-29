@@ -54,10 +54,6 @@ y2 : LengthOrPercentage -> SVGAttribute Tag.Line
 y2 = Str "y2" . interpolate
 
 export %inline
-textAnchor : TextAnchor -> SVGAttribute Text
-textAnchor = Str "text-anchor" . interpolate
-
-export %inline
 xmlns : String -> SVGAttribute SVG
 xmlns = Str "xmlns"
 
@@ -75,10 +71,6 @@ parameters {0 s : String}
   export %inline
   classes : {0 t : _} -> List String -> SVGAttribute t
   classes = Str "class" . unwords
-
-  export %inline
-  fontSize : LengthOrPercentage -> SVGAttribute t
-  fontSize = Str "font-size" . interpolate
 
   export %inline
   cx : (0 prf : HasCX t) => LengthOrPercentage -> SVGAttribute t
@@ -150,3 +142,43 @@ parameters {0 s : String}
     -> (minX, minY, width, height : LengthOrPercentage)
     -> SVGAttribute t
   viewBox mx my w h = Str "viewBox" "\{mx} \{my} \{w} \{h}"
+
+  export %inline
+  dominantBaseline : (0 p : IsText t) => DominantBaseline -> SVGAttribute t
+  dominantBaseline = Str "dominant-baseline" . interpolate
+
+  export %inline
+  textAnchor : (0 p : IsText t) => TextAnchor -> SVGAttribute t
+  textAnchor = Str "text-anchor" . interpolate
+
+  export %inline
+  font : (0 p : IsText t) => String -> SVGAttribute t
+  font = Str "font"
+
+  export %inline
+  fontFamily : (0 p : IsText t) => String -> SVGAttribute t
+  fontFamily = Str "font-family"
+
+  export %inline
+  fontWeight : (0 p : IsText t) => FontWeight -> SVGAttribute t
+  fontWeight = Str "font-weight" . interpolate
+
+  export %inline
+  lengthAdjust : (0 p : IsText t) => LengthAdjust -> SVGAttribute t
+  lengthAdjust = Str "lengthAdjust" . interpolate
+
+  export %inline
+  textLength : (0 p : IsText t) => LengthOrPercentage -> SVGAttribute t
+  textLength = Str "textLength" . interpolate
+
+  export %inline
+  dx : (0 p : IsText t) => LengthOrPercentage -> SVGAttribute t
+  dx = Str "dx" . interpolate
+
+  export %inline
+  dy : (0 p : IsText t) => LengthOrPercentage -> SVGAttribute t
+  dy = Str "dy" . interpolate
+
+  export %inline
+  fontSize : (0 p : IsText t) => LengthOrPercentage -> SVGAttribute t
+  fontSize = Str "font-size" . interpolate

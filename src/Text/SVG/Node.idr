@@ -72,8 +72,16 @@ symbol : List (SVGAttribute Symbol) -> List SVGNode -> SVGNode
 symbol = El _
 
 export %inline
-text : List (SVGAttribute Text) -> String -> SVGNode
-text as s = El _ as [Txt s]
+text1 : List (SVGAttribute Text) -> String -> SVGNode
+text1 as s = El _ as [Txt s]
+
+export %inline
+text : List (SVGAttribute Text) -> List SVGNode -> SVGNode
+text as = El _ as
+
+export %inline
+tspan : List (SVGAttribute TSpan) -> List SVGNode -> SVGNode
+tspan as = El _ as
 
 export %inline
 use : List (SVGAttribute Use) -> SVGNode
