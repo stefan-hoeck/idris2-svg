@@ -221,10 +221,20 @@ data PathCmd : Type where
   QSucc : (rel : Bool) -> (x,y : Number) -> PathCmd
   Cubic : (rel : Bool) -> (x1,y1,x2,y2,x,y : Number) -> PathCmd
   CSucc : (rel : Bool) -> (x2,y2,x,y : Number) -> PathCmd
+  Arc   :
+       (rel : Bool)
+    -> (rx,ry,rot : Number)
+    -> (largeArc,sweep : Bool)
+    -> (x,y : Number)
+    -> PathCmd
 
 letter : Bool -> String -> String -> String
 letter False u l = u
 letter True  u l = l
+
+digit : Bool -> String
+digit False = "0"
+digit True  = "1"
 
 export
 Interpolation PathCmd where
@@ -241,6 +251,8 @@ Interpolation PathCmd where
     letter rel "Q" "q" ++ "\{x1} \{y1},\{x} \{y}"
   interpolate (Cubic rel x1 y1 x2 y2 x y) =
     letter rel "C" "c" ++ "\{x1} \{y1},\{x2} \{y2},\{x} \{y}"
+  interpolate (Arc rel rx ry rot l s x y) =
+    letter rel "A" "a" ++ "\{rx} \{ry} \{rot} \{digit l} \{digit s} \{x} \{y}"
 
 namespace Path
   export %inline
@@ -306,6 +318,22 @@ namespace Path
   export %inline
   q : (x1,y1,x,y : Number) -> PathCmd
   q = Quadr True
+
+  export %inline
+  A   :
+       (rx,ry,rot : Number)
+    -> (largeArc,sweep : Bool)
+    -> (x,y : Number)
+    -> PathCmd
+  A = Arc False
+
+  export %inline
+  a   :
+       (rx,ry,rot : Number)
+    -> (largeArc,sweep : Bool)
+    -> (x,y : Number)
+    -> PathCmd
+  a = Arc True
 
 --------------------------------------------------------------------------------
 --          X11 Colors (https://www.w3.org/TR/css3-color/#svg-color)
