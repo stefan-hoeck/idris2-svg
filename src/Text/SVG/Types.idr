@@ -371,6 +371,59 @@ Interpolation TextAnchor where
   interpolate Middle = "middle"
   interpolate End    = "end"
 
+namespace DominantBaselie
+  public export
+  data DominantBaseline : Type where
+    Auto           : DominantBaseline
+    Ideographic    : DominantBaseline
+    Alphabetic     : DominantBaseline
+    Hanging        : DominantBaseline
+    Mathematical   : DominantBaseline
+    Middle         : DominantBaseline
+    Central        : DominantBaseline
+    TextAfterEdge  : DominantBaseline
+    TextBeforeEdge : DominantBaseline
+    TextBottom     : DominantBaseline
+    TextTop        : DominantBaseline
+
+  export
+  Interpolation DominantBaseline where
+    interpolate Auto           = "auto"
+    interpolate Ideographic    = "ideographic"
+    interpolate Alphabetic     = "alphabetic"
+    interpolate Hanging        = "hanging"
+    interpolate Mathematical   = "mathematical"
+    interpolate Middle         = "middle"
+    interpolate Central        = "central"
+    interpolate TextAfterEdge  = "text-after-edge"
+    interpolate TextBeforeEdge = "text-before-edge"
+    interpolate TextBottom     = "text-bottom"
+    interpolate TextTop        = "text-top"
+
+public export
+data FontWeight : Type where
+  Normal  : FontWeight
+  Bold    : FontWeight
+  Bolder  : FontWeight
+  Lighter : FontWeight
+  Val     : Number -> FontWeight
+
+export
+Interpolation FontWeight where
+  interpolate Normal  = "normal"
+  interpolate Bold    = "bold"
+  interpolate Bolder  = "bolder"
+  interpolate Lighter = "lighter"
+  interpolate (Val x) = interpolate x
+
+export
+data LengthAdjust = Spacing | SpacingAndGlyphs
+
+export
+Interpolation LengthAdjust where
+  interpolate Spacing          = "spacing"
+  interpolate SpacingAndGlyphs = "spacingAndGlyphs"
+
 --------------------------------------------------------------------------------
 --          X11 Colors (https://www.w3.org/TR/css3-color/#svg-color)
 --------------------------------------------------------------------------------
