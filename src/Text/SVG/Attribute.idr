@@ -65,11 +65,51 @@ parameters {0 s : String}
            {0 t : SVGTag s}
 
   export %inline
-  class : {0 t : _} -> String -> SVGAttribute t
+  transform : Transform -> SVGAttribute t
+  transform = Str "transform" . interpolate
+
+  export %inline
+  transforms : List Transform -> SVGAttribute t
+  transforms = Str "transform" . unwords . map interpolate
+
+  export %inline
+  translateX : (dx : Number) -> SVGAttribute t
+  translateX dx = transform (Translate dx 0)
+
+  export %inline
+  translateY : (dy : Number) -> SVGAttribute t
+  translateY dy = transform (Translate 0 dy)
+
+  export %inline
+  translate : (dx,dy : Number) -> SVGAttribute t
+  translate dx dy = transform (Translate dx dy)
+
+  export %inline
+  rotate : (ang : Number) -> SVGAttribute t
+  rotate ang = transform (Rotate ang)
+
+  export %inline
+  scaleX : (x : Number) -> SVGAttribute t
+  scaleX x = transform (Scale x 1)
+
+  export %inline
+  scaleY : (y : Number) -> SVGAttribute t
+  scaleY y = transform (Scale 1 y)
+
+  export %inline
+  scaleXY : (x,y : Number) -> SVGAttribute t
+  scaleXY x y = transform (Scale x y)
+
+  export %inline
+  scale : (v : Number) -> SVGAttribute t
+  scale v = transform (Scale v v)
+
+  export %inline
+  class : String -> SVGAttribute t
   class = Str "class"
 
   export %inline
-  classes : {0 t : _} -> List String -> SVGAttribute t
+  classes : List String -> SVGAttribute t
   classes = Str "class" . unwords
 
   export %inline
