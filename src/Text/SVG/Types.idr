@@ -336,6 +336,42 @@ namespace Path
   a = Arc True
 
 --------------------------------------------------------------------------------
+--          Strokes
+--------------------------------------------------------------------------------
+
+public export
+data StrokeLinecap = Butt | Round | Square
+
+export
+Interpolation StrokeLinecap where
+  interpolate Butt   = "butt"
+  interpolate Round  = "round"
+  interpolate Square = "square"
+
+namespace StrokeLinejoin
+  public export
+  data StrokeLinejoin = Miter | Round | Bevel
+
+  export
+  Interpolation StrokeLinejoin where
+    interpolate Miter   = "miter"
+    interpolate Round   = "round"
+    interpolate Bevel   = "bevel"
+
+--------------------------------------------------------------------------------
+--          Text
+--------------------------------------------------------------------------------
+
+public export
+data TextAnchor = Start | Middle | End
+
+export
+Interpolation TextAnchor where
+  interpolate Start  = "start"
+  interpolate Middle = "middle"
+  interpolate End    = "end"
+
+--------------------------------------------------------------------------------
 --          X11 Colors (https://www.w3.org/TR/css3-color/#svg-color)
 --------------------------------------------------------------------------------
 
