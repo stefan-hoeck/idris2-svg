@@ -130,6 +130,18 @@ Interpolation Number where
   interpolate (I i) = show i
   interpolate (D d) = show d
 
+export %inline
+Cast Double Number where cast = D
+
+export %inline
+Cast Int32 Number where cast = I
+
+export %inline
+Cast Integer Number where cast = I . cast
+
+export %inline
+Cast Nat Number where cast = I . cast
+
 public export
 data Length : Type where
   U        : Number -> Length
