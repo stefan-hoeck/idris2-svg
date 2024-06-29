@@ -121,14 +121,15 @@ data Number : Type where
 export %inline
 FromDouble Number where fromDouble = D
 
-export %inline
-fromInteger : Integer -> Number
-fromInteger = I . cast
-
 export
 Interpolation Number where
   interpolate (I i) = show i
   interpolate (D d) = show d
+
+export
+Cast Number Double where
+  cast (I x) = cast x
+  cast (D x) = x
 
 export %inline
 Cast Double Number where cast = D
@@ -141,6 +142,26 @@ Cast Integer Number where cast = I . cast
 
 export %inline
 Cast Nat Number where cast = I . cast
+
+export
+Num Number where
+  fromInteger = I . cast
+  I x + I y = I (x + y)
+  x + y     = D $ cast x + cast y
+  I x * I y = I (x * y)
+  x * y     = D $ cast x * cast y
+
+export
+Neg Number where
+  I x - I y = I (x - y)
+  x - y     = D $ cast x - cast y
+
+  negate (I x) = I $ negate x
+  negate (D x) = D $ negate x
+
+export
+Fractional Number where
+  x / y = D $ cast x / cast y
 
 public export
 data Length : Type where
