@@ -425,6 +425,24 @@ Interpolation LengthAdjust where
   interpolate SpacingAndGlyphs = "spacingAndGlyphs"
 
 --------------------------------------------------------------------------------
+--          Transformations
+--------------------------------------------------------------------------------
+
+public export
+data Transform : Type where
+  Translate : (dx,dy : Number) -> Transform
+  Rotate    : (angle : Number) -> Transform
+  Scale     : (x,y   : Number) -> Transform
+  Matrix    : (a,b,c,d,e,f : Number) -> Transform
+
+export
+Interpolation Transform where
+  interpolate (Translate dx dy)    = "translate(\{dx},\{dy})"
+  interpolate (Rotate angle)       = "rotate(\{angle})"
+  interpolate (Scale x y)          = "scale(\{x},\{y})"
+  interpolate (Matrix a b c d e f) = "matrix(\{a},\{b},\{c},\{d},\{e},\{f})"
+
+--------------------------------------------------------------------------------
 --          X11 Colors (https://www.w3.org/TR/css3-color/#svg-color)
 --------------------------------------------------------------------------------
 

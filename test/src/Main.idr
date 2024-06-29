@@ -66,10 +66,11 @@ visualizeCubic a b x1 y1 x2 y2 x y =
 ex3 : SVGNode
 ex3 =
   svg
-    [ xmlns_2000, width 1000.u, height 1000.u ] $
-    visualizeCubic 10 10 50 100 150 100 190 10 ++
-    visualizeCubic 10 200 50 300 190 300 190 200 ++
-    visualizeCubic 10 400 50 500 250 500 190 400
+    [ xmlns_2000, width 1000.u, height 1000.u ]
+    [ g [translate 10 10]  $ visualizeCubic 0 0 50 100 150 100 200 0
+    , g [translate 10 200] $ visualizeCubic 0 0 50 100 200 100 200 0
+    , g [translate 10 400] $ visualizeCubic 0 0 50 100 250 100 200 0
+    ]
 
 main : IO ()
 main = putStrLn (render ex3)
