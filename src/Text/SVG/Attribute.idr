@@ -73,35 +73,35 @@ parameters {0 s : String}
   transforms = Str "transform" . unwords . map interpolate
 
   export %inline
-  translateX : (dx : Number) -> SVGAttribute t
+  translateX : (dx : Double) -> SVGAttribute t
   translateX dx = transform (Translate dx 0)
 
   export %inline
-  translateY : (dy : Number) -> SVGAttribute t
+  translateY : (dy : Double) -> SVGAttribute t
   translateY dy = transform (Translate 0 dy)
 
   export %inline
-  translate : (dx,dy : Number) -> SVGAttribute t
+  translate : (dx,dy : Double) -> SVGAttribute t
   translate dx dy = transform (Translate dx dy)
 
   export %inline
-  rotate : (ang : Number) -> SVGAttribute t
+  rotate : (ang : Double) -> SVGAttribute t
   rotate ang = transform (Rotate ang)
 
   export %inline
-  scaleX : (x : Number) -> SVGAttribute t
+  scaleX : (x : Double) -> SVGAttribute t
   scaleX x = transform (Scale x 1)
 
   export %inline
-  scaleY : (y : Number) -> SVGAttribute t
+  scaleY : (y : Double) -> SVGAttribute t
   scaleY y = transform (Scale 1 y)
 
   export %inline
-  scaleXY : (x,y : Number) -> SVGAttribute t
+  scaleXY : (x,y : Double) -> SVGAttribute t
   scaleXY x y = transform (Scale x y)
 
   export %inline
-  scale : (v : Number) -> SVGAttribute t
+  scale : (v : Double) -> SVGAttribute t
   scale v = transform (Scale v v)
 
   export %inline
@@ -173,8 +173,8 @@ parameters {0 s : String}
   strokeWidth = Str "stroke-width" . interpolate
 
   export
-  points : (0 p : HasPoints t) => List Number -> SVGAttribute t
-  points = Str "points" . unwords . map interpolate
+  points : (0 p : HasPoints t) => List Double -> SVGAttribute t
+  points = Str "points" . unwords . map renderDouble
 
   export
   viewBox :
