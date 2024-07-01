@@ -2,153 +2,128 @@ module Text.SVG.Tag
 
 %default total
 
-||| SVG elements with these tags currently get special
-||| support in terms of type safety when creating
-||| SVG trees.
-public export
-data SVGTag : String -> Type where
-  Circle       : SVGTag "circle"
-  Ellipse      : SVGTag "ellipse"
-  Filter       : SVGTag "filter"
-  Group        : SVGTag "g"
-  Image        : SVGTag "image"
-  Line         : SVGTag "line"
-  Marker       : SVGTag "marker"
-  Mask         : SVGTag "mask"
-  Path         : SVGTag "path"
-  Pattern      : SVGTag "pattern"
-  Polygon      : SVGTag "polygon"
-  Polyline     : SVGTag "polyline"
-  Rect         : SVGTag "rect"
-  SVG          : SVGTag "svg"
-  Symbol       : SVGTag "symbol"
-  Text         : SVGTag "text"
-  TSpan        : SVGTag "tspan"
-  Use          : SVGTag "use"
-  View         : SVGTag "view"
-
 --------------------------------------------------------------------------------
 -- Predicates
 --------------------------------------------------------------------------------
 
 ||| Proof that the given element can have an `href` attribute
 public export
-data HasHref : (t : SVGTag s) -> Type where
-  HasHrefImage   : HasHref Image
-  HasHrefPattern : HasHref Pattern
-  HasHrefUse     : HasHref Use
+data HasHref : (s : String) -> Type where
+  HasHrefImage   : HasHref "image"
+  HasHrefPattern : HasHref "pattern"
+  HasHrefUse     : HasHref "use"
 
 ||| Proof that the given element can have a `cx` attribute
 public export
-data HasCX : (t : SVGTag s) -> Type where
-  HasCXCircle  : HasCX Circle
-  HasCXEllipse : HasCX Ellipse
+data HasCX : (s : String) -> Type where
+  HasCXCircle  : HasCX "circle"
+  HasCXEllipse : HasCX "ellipse"
 
 ||| Proof that the given element can have a `cy` attribute
 public export
-data HasCY : (t : SVGTag s) -> Type where
-  HasCYCircle  : HasCY Circle
-  HasCYEllipse : HasCY Ellipse
+data HasCY : (s : String) -> Type where
+  HasCYCircle  : HasCY "circle"
+  HasCYEllipse : HasCY "ellipse"
 
 ||| Proof that the given element can have an `rx` attribute
 public export
-data HasRX : (t : SVGTag s) -> Type where
-  HasRXEllipse : HasRX Ellipse
-  HasRXRect    : HasRX Rect
+data HasRX : (s : String) -> Type where
+  HasRXEllipse : HasRX "ellipse"
+  HasRXRect    : HasRX "rect"
 
 ||| Proof that the given element can have an `ry` attribute
 public export
-data HasRY : (t : SVGTag s) -> Type where
-  HasRYEllipse : HasRY Ellipse
-  HasRYRect    : HasRY Rect
+data HasRY : (s : String) -> Type where
+  HasRYEllipse : HasRY "ellipse"
+  HasRYRect    : HasRY "rect"
 
 ||| Proof that the given element can have an `x` attribute
 public export
-data HasX : (t : SVGTag s) -> Type where
-  HasXFilter  : HasX Filter
-  HasXImage   : HasX Image
-  HasXRect    : HasX Rect
-  HasXText    : HasX Text
+data HasX : (s : String) -> Type where
+  HasXFilter  : HasX "filter"
+  HasXImage   : HasX "image"
+  HasXRect    : HasX "rect"
+  HasXText    : HasX "text"
 
 ||| Proof that the given element can have a `y` attribute
 public export
-data HasY : (t : SVGTag s) -> Type where
-  HasYFilter  : HasY Filter
-  HasYImage   : HasY Image
-  HasYRect    : HasY Rect
-  HasYText    : HasY Text
+data HasY : (s : String) -> Type where
+  HasYFilter  : HasY "filter"
+  HasYImage   : HasY "image"
+  HasYRect    : HasY "rect"
+  HasYText    : HasY "text"
 
 ||| Proof that the given element can have a `height` attribute
 public export
-data HasHeight : (t : SVGTag s) -> Type where
-  HasHeightFilter  : HasHeight Filter
-  HasHeightImage   : HasHeight Image
-  HasHeightMask    : HasHeight Mask
-  HasHeightPath    : HasHeight Path
-  HasHeightPattern : HasHeight Pattern
-  HasHeightRect    : HasHeight Rect
-  HasHeightSVG     : HasHeight SVG
-  HasHeightUse     : HasHeight Use
+data HasHeight : (s : String) -> Type where
+  HasHeightFilter  : HasHeight "filter"
+  HasHeightImage   : HasHeight "image"
+  HasHeightMask    : HasHeight "mask"
+  HasHeightPath    : HasHeight "path"
+  HasHeightPattern : HasHeight "pattern"
+  HasHeightRect    : HasHeight "rect"
+  HasHeightSVG     : HasHeight "svg"
+  HasHeightUse     : HasHeight "use"
 
 ||| Proof that the given element can have a `fill` attribute
 public export
-data HasFill : (t : SVGTag s) -> Type where
-  HasFillCircle   : HasFill Circle
-  HasFillEllipse  : HasFill Ellipse
-  HasFillGroup    : HasFill Group
-  HasFillLine     : HasFill Line
-  HasFillPath     : HasFill Path
-  HasFillPolygon  : HasFill Polygon
-  HasFillPolyline : HasFill Polyline
-  HasFillRect     : HasFill Rect
-  HasFillSVG      : HasFill SVG
-  HasFillText     : HasFill Text
+data HasFill : (s : String) -> Type where
+  HasFillCircle   : HasFill "circle"
+  HasFillEllipse  : HasFill "ellipse"
+  HasFillGroup    : HasFill "group"
+  HasFillLine     : HasFill "line"
+  HasFillPath     : HasFill "path"
+  HasFillPolygon  : HasFill "polygon"
+  HasFillPolyline : HasFill "polyline"
+  HasFillRect     : HasFill "rect"
+  HasFillSVG      : HasFill "svg"
+  HasFillText     : HasFill "text"
 
 ||| Proof that the given element can have a `stroke` attribute
 public export
-data HasStroke : (t : SVGTag s) -> Type where
-  HasStrokeCircle   : HasStroke Circle
-  HasStrokeEllipse  : HasStroke Ellipse
-  HasStrokeGroup    : HasStroke Group
-  HasStrokeLine     : HasStroke Line
-  HasStrokePath     : HasStroke Path
-  HasStrokePolygon  : HasStroke Polygon
-  HasStrokePolyline : HasStroke Polyline
-  HasStrokeRect     : HasStroke Rect
-  HasStrokeSVG      : HasStroke SVG
-  HasStrokeText     : HasStroke Text
+data HasStroke : (s : String) -> Type where
+  HasStrokeCircle   : HasStroke "circle"
+  HasStrokeEllipse  : HasStroke "ellipse"
+  HasStrokeGroup    : HasStroke "group"
+  HasStrokeLine     : HasStroke "line"
+  HasStrokePath     : HasStroke "path"
+  HasStrokePolygon  : HasStroke "polygon"
+  HasStrokePolyline : HasStroke "polyline"
+  HasStrokeRect     : HasStroke "rect"
+  HasStrokeSVG      : HasStroke "svg"
+  HasStrokeText     : HasStroke "text"
 
 ||| Proof that the given element can have a `width` attribute
 public export
-data HasWidth : (t : SVGTag s) -> Type where
-  HasWidthFilter  : HasWidth Filter
-  HasWidthImage   : HasWidth Image
-  HasWidthMask    : HasWidth Mask
-  HasWidthPath    : HasWidth Path
-  HasWidthPattern : HasWidth Pattern
-  HasWidthRect    : HasWidth Rect
-  HasWidthSVG     : HasWidth SVG
-  HasWidthUse     : HasWidth Use
+data HasWidth : (s : String) -> Type where
+  HasWidthFilter  : HasWidth "filter"
+  HasWidthImage   : HasWidth "image"
+  HasWidthMask    : HasWidth "mask"
+  HasWidthPath    : HasWidth "path"
+  HasWidthPattern : HasWidth "pattern"
+  HasWidthRect    : HasWidth "rect"
+  HasWidthSVG     : HasWidth "svg"
+  HasWidthUse     : HasWidth "use"
 
 ||| Proof that the given element can have a `viewPort` attribute
 public export
-data HasViewBox : (t : SVGTag s) -> Type where
-  HasViewBoxMarker  : HasViewBox Marker
-  HasViewBoxPattern : HasViewBox Pattern
-  HasViewBoxSVG     : HasViewBox SVG
-  HasViewBoxSymbol  : HasViewBox Symbol
-  HasViewBoxView    : HasViewBox View
+data HasViewBox : (s : String) -> Type where
+  HasViewBoxMarker  : HasViewBox "marker"
+  HasViewBoxPattern : HasViewBox "pattern"
+  HasViewBoxSVG     : HasViewBox "svg"
+  HasViewBoxSymbol  : HasViewBox "symbol"
+  HasViewBoxView    : HasViewBox "view"
 
 ||| Proof that the given element can have a `points` attribute
 public export
-data HasPoints : (t : SVGTag s) -> Type where
-  HasPointsPolygon  : HasPoints Polygon
-  HasPointsPolyline  : HasPoints Polyline
+data HasPoints : (s : String) -> Type where
+  HasPointsPolygon  : HasPoints "polygon"
+  HasPointsPolyline  : HasPoints "polyline"
 
 ||| Proof that the given element displays some text
 public export
-data IsText : (t : SVGTag s) -> Type where
-  IsTextText  : IsText Text
-  IsTextTSpan : IsText TSpan
-  IsTextGroup : IsText Group
-  IsTextSVG   : IsText SVG
+data IsText : (s : String) -> Type where
+  IsTextText  : IsText "text"
+  IsTextTSpan : IsText "tspan"
+  IsTextGroup : IsText "group"
+  IsTextSVG   : IsText "svg"
