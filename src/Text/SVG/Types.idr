@@ -56,23 +56,6 @@ export %inline
 (.grad) = cast . Grad
 
 --------------------------------------------------------------------------------
---          SVGColor
---------------------------------------------------------------------------------
-
-public export
-data SVGColor : Type where
-  RGB : (red,green,blue : Bits8) -> SVGColor
-  Key : String -> SVGColor
-
-export
-Interpolation SVGColor where
-  interpolate (RGB r g b) = "rgba(\{show r} \{show g} \{show b}})"
-  interpolate (Key s)     = s
-
-export
-Show SVGColor where show = interpolate
-
---------------------------------------------------------------------------------
 --          Percentage
 --------------------------------------------------------------------------------
 
@@ -121,6 +104,24 @@ export %inline
   -> {auto 0 prf : Holds IsPercentage v}
   -> a
 (.perc) v = cast $ MkPercentage v
+
+--------------------------------------------------------------------------------
+--          SVGColor
+--------------------------------------------------------------------------------
+
+public export
+data SVGColor : Type where
+  RGB  : (red,green,blue : Bits8) -> SVGColor
+  RGBA : (red,green,blue : Bits8) -> Percentage -> SVGColor
+  Key  : String -> SVGColor
+
+-- export
+-- Interpolation SVGColor where
+--   interpolate (RGB r g b) = "rgba(\{show r} \{show g} \{show b}})"
+--   interpolate (Key s)     = s
+--
+-- export
+-- Show SVGColor where show = interpolate
 
 --------------------------------------------------------------------------------
 --          Length

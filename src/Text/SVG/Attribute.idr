@@ -17,10 +17,14 @@ data SVGAttribute : (s : String) -> Type where
   Str    : {0 s : _} -> (name,val : String) -> SVGAttribute s
   Bool   : {0 s : _} -> (name : String) -> Bool -> SVGAttribute s
   LOP    : {0 s : _} -> (name : String) -> LengthOrPercentage -> SVGAttribute s
+  Col    : {0 s : _} -> (name : String) -> SVGColor -> SVGAttribute s
   Perc   : {0 s : _} -> (name : String) -> Percentage -> SVGAttribute s
   Pth    : {0 s : _} -> (name : String) -> List PathCmd -> SVGAttribute s
   Points : {0 s : _} -> (name : String) -> List Double -> SVGAttribute s
   Empty  : {0 s : _} -> SVGAttribute s
+
+opac : String -> Percentage -> String
+opac s p = #"\#{s}-opacity="\{p}""#
 
 export
 displayAttribute : {0 s : _} -> SVGAttribute s -> Maybe String
@@ -33,6 +37,11 @@ displayAttribute (Points nm va) = Just #"\#{nm}="\#{unwords $ map renderDouble v
 displayAttribute (Bool nm True) = Just nm
 displayAttribute (Bool _ False) = Nothing
 displayAttribute Empty          = Nothing
+displayAttribute (Col nm x)     =
+  Just $ case x of
+    RGB red green blue    => #"\#{nm}="rgb(\{show r} \{show g} \{show b}})" \{opac nm 1.perc}"#
+    RGBA red green blue y => #"\#{nm}="rgb(\{show r} \{show g} \{show b}})" \{opac nm y}"#
+    Key str               => #"\#{nm}="\{str}" \{opac nm 1.perc}"#
 
 export
 displayAttributes : {0 s : _} -> List (SVGAttribute s) -> String
@@ -150,7 +159,7 @@ parameters {0 s : String}
 
   export %inline
   fill : (0 p : HasFill s) => SVGColor -> SVGAttribute s
-  fill = Str "fill" . interpolate
+  fill = Col "fill"
 
   export %inline
   fillOpacity : (0 p : HasFill s) => Percentage -> SVGAttribute s
@@ -158,7 +167,7 @@ parameters {0 s : String}
 
   export %inline
   stroke : (0 p : HasStroke s) => SVGColor -> SVGAttribute s
-  stroke = Str "stroke" . interpolate
+  stroke = Col "stroke"
 
   export %inline
   strokeLinecap : (0 p : HasStroke s) => StrokeLinecap -> SVGAttribute s
