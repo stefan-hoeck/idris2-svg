@@ -6,6 +6,19 @@ import public Data.Refined
 %default total
 %language ElabReflection
 
+||| Prints a floating point number, removing the trailing `".0"`
+||| in case it's an integer.
+export
+renderDouble : Double -> String
+renderDouble d =
+  let s := show d
+   in case [<] <>< unpack s of
+        (h :< '.' :< '0') => pack (h <>> [])
+        _                 => s
+
+%inline
+Interpolation Double where interpolate = renderDouble
+
 public export
 data SVGAngle : Type where
   Deg  : Double -> SVGAngle
@@ -14,9 +27,9 @@ data SVGAngle : Type where
 
 export
 Interpolation SVGAngle where
-  interpolate (Deg x)  = show x ++ "deg"
-  interpolate (Rad x)  = show x ++ "rad"
-  interpolate (Grad x) = show x ++ "grad"
+  interpolate (Deg x)  = renderDouble x ++ "deg"
+  interpolate (Rad x)  = renderDouble x ++ "rad"
+  interpolate (Grad x) = renderDouble x ++ "grad"
 
 export %inline
 deg : Cast SVGAngle a => Double -> a
@@ -79,7 +92,7 @@ record Percentage where
 
 export
 Interpolation Percentage where
-  interpolate (MkPercentage v) = show v ++ "%"
+  interpolate (MkPercentage v) = renderDouble v ++ "%"
 
 ||| Convenience function for creating percentages with little
 ||| syntactic overhead.
@@ -114,109 +127,59 @@ export %inline
 --------------------------------------------------------------------------------
 
 public export
-data Number : Type where
-  I : Int32 -> Number
-  D : Double -> Number
-
-export %inline
-FromDouble Number where fromDouble = D
-
-export
-Interpolation Number where
-  interpolate (I i) = show i
-  interpolate (D d) = show d
-
-export
-Cast Number Double where
-  cast (I x) = cast x
-  cast (D x) = x
-
-export %inline
-Cast Double Number where cast = D
-
-export %inline
-Cast Int32 Number where cast = I
-
-export %inline
-Cast Integer Number where cast = I . cast
-
-export %inline
-Cast Nat Number where cast = I . cast
-
-export
-Num Number where
-  fromInteger = I . cast
-  I x + I y = I (x + y)
-  x + y     = D $ cast x + cast y
-  I x * I y = I (x * y)
-  x * y     = D $ cast x * cast y
-
-export
-Neg Number where
-  I x - I y = I (x - y)
-  x - y     = D $ cast x - cast y
-
-  negate (I x) = I $ negate x
-  negate (D x) = D $ negate x
-
-export
-Fractional Number where
-  x / y = D $ cast x / cast y
-
-public export
 data Length : Type where
-  U        : Number -> Length
-  Pt       : Number -> Length
-  Px       : Number -> Length
-  Mm       : Number -> Length
-  Cm       : Number -> Length
+  U        : Double -> Length
+  Pt       : Double -> Length
+  Px       : Double -> Length
+  Mm       : Double -> Length
+  Cm       : Double -> Length
 
 export
 Interpolation Length where
-  interpolate (U x)  =  interpolate x
-  interpolate (Pt x)  = interpolate x ++ "pt"
-  interpolate (Px x)  = interpolate x ++ "px"
-  interpolate (Mm x)  = interpolate x ++ "mm"
-  interpolate (Cm x)  = interpolate x ++ "cm"
+  interpolate (U x)  =  renderDouble x
+  interpolate (Pt x)  = renderDouble x ++ "pt"
+  interpolate (Px x)  = renderDouble x ++ "px"
+  interpolate (Mm x)  = renderDouble x ++ "mm"
+  interpolate (Cm x)  = renderDouble x ++ "cm"
 
 export %inline
-u : Cast Length a => Number -> a
+u : Cast Length a => Double -> a
 u = cast . U
 
 export %inline
-mm : Cast Length a => Number -> a
+mm : Cast Length a => Double -> a
 mm = cast . Mm
 
 export %inline
-cm : Cast Length a => Number -> a
+cm : Cast Length a => Double -> a
 cm = cast . Cm
 
 export %inline
-px : Cast Length a => Number -> a
+px : Cast Length a => Double -> a
 px = cast . Px
 
 export %inline
-pt : Cast Length a => Number -> a
+pt : Cast Length a => Double -> a
 pt = cast . Pt
 
 export %inline
-(.u) : Cast Length a => Number -> a
+(.u) : Cast Length a => Double -> a
 (.u) = cast . U
 
 export %inline
-(.mm) : Cast Length a => Number -> a
+(.mm) : Cast Length a => Double -> a
 (.mm) = cast . Mm
 
 export %inline
-(.cm) : Cast Length a => Number -> a
+(.cm) : Cast Length a => Double -> a
 (.cm) = cast . Cm
 
 export %inline
-(.px) : Cast Length a => Number -> a
+(.px) : Cast Length a => Double -> a
 (.px) = cast . Px
 
 export %inline
-(.pt) : Cast Length a => Number -> a
+(.pt) : Cast Length a => Double -> a
 (.pt) = cast . Pt
 
 --------------------------------------------------------------------------------
@@ -245,20 +208,20 @@ Cast Length LengthOrPercentage where cast = Len
 
 public export
 data PathCmd : Type where
-  Move  : (rel : Bool) -> (x,y : Number) -> PathCmd
-  Line  : (rel : Bool) -> (x,y : Number) -> PathCmd
-  Horiz : (rel : Bool) -> (x : Number) -> PathCmd
-  Vert  : (rel : Bool) -> (y : Number) -> PathCmd
+  Move  : (rel : Bool) -> (x,y : Double) -> PathCmd
+  Line  : (rel : Bool) -> (x,y : Double) -> PathCmd
+  Horiz : (rel : Bool) -> (x : Double) -> PathCmd
+  Vert  : (rel : Bool) -> (y : Double) -> PathCmd
   Z     : PathCmd
-  Quadr : (rel : Bool) -> (x1,y1,x,y : Number) -> PathCmd
-  QSucc : (rel : Bool) -> (x,y : Number) -> PathCmd
-  Cubic : (rel : Bool) -> (x1,y1,x2,y2,x,y : Number) -> PathCmd
-  CSucc : (rel : Bool) -> (x2,y2,x,y : Number) -> PathCmd
+  Quadr : (rel : Bool) -> (x1,y1,x,y : Double) -> PathCmd
+  QSucc : (rel : Bool) -> (x,y : Double) -> PathCmd
+  Cubic : (rel : Bool) -> (x1,y1,x2,y2,x,y : Double) -> PathCmd
+  CSucc : (rel : Bool) -> (x2,y2,x,y : Double) -> PathCmd
   Arc   :
        (rel : Bool)
-    -> (rx,ry,rot : Number)
+    -> (rx,ry,rot : Double)
     -> (largeArc,sweep : Bool)
-    -> (x,y : Number)
+    -> (x,y : Double)
     -> PathCmd
 
 letter : Bool -> String -> String -> String
@@ -289,82 +252,82 @@ Interpolation PathCmd where
 
 namespace Path
   export %inline
-  M : (x,y : Number) -> PathCmd
+  M : (x,y : Double) -> PathCmd
   M = Move False
 
   export %inline
-  m : (x,y : Number) -> PathCmd
+  m : (x,y : Double) -> PathCmd
   m = Move True
 
   export %inline
-  L : (x,y : Number) -> PathCmd
+  L : (x,y : Double) -> PathCmd
   L = Line False
 
   export %inline
-  l : (x,y : Number) -> PathCmd
+  l : (x,y : Double) -> PathCmd
   l = Line True
 
   export %inline
-  H : (x : Number) -> PathCmd
+  H : (x : Double) -> PathCmd
   H = Horiz False
 
   export %inline
-  h : (x : Number) -> PathCmd
+  h : (x : Double) -> PathCmd
   h = Horiz True
 
   export %inline
-  V : (x : Number) -> PathCmd
+  V : (x : Double) -> PathCmd
   V = Vert False
 
   export %inline
-  v : (x : Number) -> PathCmd
+  v : (x : Double) -> PathCmd
   v = Vert True
 
   export %inline
-  S : (x2,y2,x,y : Number) -> PathCmd
+  S : (x2,y2,x,y : Double) -> PathCmd
   S = CSucc False
 
   export %inline
-  s : (x2,y2,x,y : Number) -> PathCmd
+  s : (x2,y2,x,y : Double) -> PathCmd
   s = CSucc True
 
   export %inline
-  C : (x1,y1,x2,y2,x,y : Number) -> PathCmd
+  C : (x1,y1,x2,y2,x,y : Double) -> PathCmd
   C = Cubic False
 
   export %inline
-  c : (x1,y1,x2,y2,x,y : Number) -> PathCmd
+  c : (x1,y1,x2,y2,x,y : Double) -> PathCmd
   c = Cubic True
 
   export %inline
-  T : (x,y : Number) -> PathCmd
+  T : (x,y : Double) -> PathCmd
   T = QSucc False
 
   export %inline
-  t : (x,y : Number) -> PathCmd
+  t : (x,y : Double) -> PathCmd
   t = QSucc True
 
   export %inline
-  Q : (x1,y1,x,y : Number) -> PathCmd
+  Q : (x1,y1,x,y : Double) -> PathCmd
   Q = Quadr False
 
   export %inline
-  q : (x1,y1,x,y : Number) -> PathCmd
+  q : (x1,y1,x,y : Double) -> PathCmd
   q = Quadr True
 
   export %inline
   A   :
-       (rx,ry,rot : Number)
+       (rx,ry,rot : Double)
     -> (largeArc,sweep : Bool)
-    -> (x,y : Number)
+    -> (x,y : Double)
     -> PathCmd
   A = Arc False
 
   export %inline
   a   :
-       (rx,ry,rot : Number)
+       (rx,ry,rot : Double)
     -> (largeArc,sweep : Bool)
-    -> (x,y : Number)
+    -> (x,y : Double)
     -> PathCmd
   a = Arc True
 
@@ -439,7 +402,7 @@ data FontWeight : Type where
   Bold    : FontWeight
   Bolder  : FontWeight
   Lighter : FontWeight
-  Val     : Number -> FontWeight
+  Val     : Double -> FontWeight
 
 export
 Interpolation FontWeight where
@@ -447,7 +410,7 @@ Interpolation FontWeight where
   interpolate Bold    = "bold"
   interpolate Bolder  = "bolder"
   interpolate Lighter = "lighter"
-  interpolate (Val x) = interpolate x
+  interpolate (Val x) = renderDouble x
 
 export
 data LengthAdjust = Spacing | SpacingAndGlyphs
@@ -463,10 +426,10 @@ Interpolation LengthAdjust where
 
 public export
 data Transform : Type where
-  Translate : (dx,dy : Number) -> Transform
-  Rotate    : (angle : Number) -> Transform
-  Scale     : (x,y   : Number) -> Transform
-  Matrix    : (a,b,c,d,e,f : Number) -> Transform
+  Translate : (dx,dy : Double) -> Transform
+  Rotate    : (angle : Double) -> Transform
+  Scale     : (x,y   : Double) -> Transform
+  Matrix    : (a,b,c,d,e,f : Double) -> Transform
 
 export
 Interpolation Transform where

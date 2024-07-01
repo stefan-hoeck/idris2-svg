@@ -47,7 +47,7 @@ ex2 =
         ]
     ]
 
-visualizeCubic : (a,b,x1,y1,x2,y2,x,y : Number) -> List SVGNode
+visualizeCubic : (a,b,x1,y1,x2,y2,x,y : Double) -> List SVGNode
 visualizeCubic a b x1 y1 x2 y2 x y =
   [ path
       [ d [ M a b, C x1 y1 x2 y2 x y], fill none, stroke black, strokeWidth 5.u ]
