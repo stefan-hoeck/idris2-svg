@@ -51,11 +51,11 @@ visualizeCubic : (a,b,x1,y1,x2,y2,x,y : Double) -> List SVGNode
 visualizeCubic a b x1 y1 x2 y2 x y =
   [ path
       [ d [ M a b, C x1 y1 x2 y2 x y], fill none, stroke black, strokeWidth 5.u ]
-  , g [stroke red, strokeWidth 2.u]
+  , g [stroke (RGBA 255 0 0 30.perc), strokeWidth 2.u]
       [ line   [ A.x1 a.u, A.y1 b.u, A.x2 x1.u, A.y2 y1.u]
       , line   [ A.x1 x2.u, A.y1 y2.u, A.x2 x.u, A.y2 y.u]
       ]
-  , g [fill red, stroke none]
+  , g [fill (RGBA 255 0 0 30.perc), stroke none]
       [ circle [ A.cx a.u, A.cy b.u, A.r 5.u]
       , circle [ A.cx x1.u, A.cy y1.u, A.r 5.u]
       , circle [ A.cx x2.u, A.cy y2.u, A.r 5.u]
