@@ -10,9 +10,8 @@ import Text.SVG.Types
 public export
 data SVGNode : Type where
   El    :
-       {tag : _}
-    -> (0 t : SVGTag tag)
-    -> List (SVGAttribute t)
+       (tag : String)
+    -> List (SVGAttribute tag)
     -> List SVGNode
     -> SVGNode
   Txt   : String -> SVGNode
@@ -20,75 +19,75 @@ data SVGNode : Type where
   Empty : SVGNode
 
 export %inline
-el : {s : _} -> (0 t : SVGTag s) -> List (SVGAttribute t) -> SVGNode
+el : (s : String) -> List (SVGAttribute s) -> SVGNode
 el t as = El t as []
 
 export %inline
-circle : List (SVGAttribute Circle) -> SVGNode
+circle : List (SVGAttribute "circle") -> SVGNode
 circle = el _
 
 export %inline
-ellipse : List (SVGAttribute Ellipse) -> SVGNode
+ellipse : List (SVGAttribute "ellipse") -> SVGNode
 ellipse = el _
 
 export %inline
-g : List (SVGAttribute Group) -> List SVGNode -> SVGNode
+g : List (SVGAttribute "group") -> List SVGNode -> SVGNode
 g = El _
 
 export %inline
-image : List (SVGAttribute Image) -> SVGNode
+image : List (SVGAttribute "image") -> SVGNode
 image = el _
 
 export %inline
-line : List (SVGAttribute Tag.Line) -> SVGNode
+line : List (SVGAttribute "line") -> SVGNode
 line = el _
 
 export %inline
-mask : List (SVGAttribute Image) -> List SVGNode -> SVGNode
+mask : List (SVGAttribute "mask") -> List SVGNode -> SVGNode
 mask = El _
 
 export %inline
-rect : List (SVGAttribute Rect) -> SVGNode
+rect : List (SVGAttribute "rect") -> SVGNode
 rect = el _
 
 export %inline
-path : List (SVGAttribute Path) -> SVGNode
+path : List (SVGAttribute "path") -> SVGNode
 path = el _
 
 export %inline
-polygon : List (SVGAttribute Polygon) -> SVGNode
+polygon : List (SVGAttribute "polygon") -> SVGNode
 polygon = el _
 
 export %inline
-polyline : List (SVGAttribute Polyline) -> SVGNode
+polyline : List (SVGAttribute "polyline") -> SVGNode
 polyline = el _
 
 export %inline
-svg : List (SVGAttribute SVG) -> List SVGNode -> SVGNode
+svg : List (SVGAttribute "svg") -> List SVGNode -> SVGNode
 svg = El _
 
 export %inline
-symbol : List (SVGAttribute Symbol) -> List SVGNode -> SVGNode
+symbol : List (SVGAttribute "symbol") -> List SVGNode -> SVGNode
 symbol = El _
 
 export %inline
-text1 : List (SVGAttribute Text) -> String -> SVGNode
+text1 : List (SVGAttribute "text") -> String -> SVGNode
 text1 as s = El _ as [Txt s]
 
 export %inline
-text : List (SVGAttribute Text) -> List SVGNode -> SVGNode
+text : List (SVGAttribute "text") -> List SVGNode -> SVGNode
 text as = El _ as
 
 export %inline
-tspan : List (SVGAttribute TSpan) -> List SVGNode -> SVGNode
+tspan : List (SVGAttribute "tspan") -> List SVGNode -> SVGNode
 tspan as = El _ as
 
 export %inline
-use : List (SVGAttribute Use) -> SVGNode
+use : List (SVGAttribute "use") -> SVGNode
 use = el _
 
 export %inline
-view : List (SVGAttribute Tag.View) -> SVGNode
+view : List (SVGAttribute "view") -> SVGNode
 view = el _
 
 --------------------------------------------------------------------------------
@@ -117,11 +116,11 @@ attrs as = let s = displayAttributes as in if null s then "" else " " ++ s
 export
 render : SVGNode -> String
 render n = case n of
-  Raw x             => x
-  Txt x             => escape x
-  El {tag} _ as []  => "<\{tag}\{attrs as}/>"
-  El {tag} _ as ns  => "<\{tag}\{attrs as}>\{go [<] ns}</\{tag}>"
-  Empty             => ""
+  Raw x         => x
+  Txt x         => escape x
+  El tag as []  => "<\{tag}\{attrs as}/>"
+  El tag as ns  => "<\{tag}\{attrs as}>\{go [<] ns}</\{tag}>"
+  Empty         => ""
 
   where
     go : SnocList String -> List SVGNode -> String
