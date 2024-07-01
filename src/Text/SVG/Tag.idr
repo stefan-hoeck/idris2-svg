@@ -70,7 +70,7 @@ public export
 data HasFill : (s : String) -> Type where
   HasFillCircle   : HasFill "circle"
   HasFillEllipse  : HasFill "ellipse"
-  HasFillGroup    : HasFill "group"
+  HasFillGroup    : HasFill "g"
   HasFillLine     : HasFill "line"
   HasFillPath     : HasFill "path"
   HasFillPolygon  : HasFill "polygon"
@@ -84,7 +84,7 @@ public export
 data HasStroke : (s : String) -> Type where
   HasStrokeCircle   : HasStroke "circle"
   HasStrokeEllipse  : HasStroke "ellipse"
-  HasStrokeGroup    : HasStroke "group"
+  HasStrokeGroup    : HasStroke "g"
   HasStrokeLine     : HasStroke "line"
   HasStrokePath     : HasStroke "path"
   HasStrokePolygon  : HasStroke "polygon"
@@ -125,5 +125,5 @@ public export
 data IsText : (s : String) -> Type where
   IsTextText  : IsText "text"
   IsTextTSpan : IsText "tspan"
-  IsTextGroup : IsText "group"
+  IsTextGroup : IsText "g"
   IsTextSVG   : IsText "svg"

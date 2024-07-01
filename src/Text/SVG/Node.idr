@@ -31,7 +31,7 @@ ellipse : List (SVGAttribute "ellipse") -> SVGNode
 ellipse = el _
 
 export %inline
-g : List (SVGAttribute "group") -> List SVGNode -> SVGNode
+g : List (SVGAttribute "g") -> List SVGNode -> SVGNode
 g = El _
 
 export %inline

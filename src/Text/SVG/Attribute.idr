@@ -24,7 +24,7 @@ data SVGAttribute : (s : String) -> Type where
   Empty  : {0 s : _} -> SVGAttribute s
 
 opac : String -> Percentage -> String
-opac s p = #"\#{s}-opacity="\{p}""#
+opac s p = #"\#{s}-opacity="\#{p}""#
 
 export
 displayAttribute : {0 s : _} -> SVGAttribute s -> Maybe String
@@ -39,9 +39,9 @@ displayAttribute (Bool _ False) = Nothing
 displayAttribute Empty          = Nothing
 displayAttribute (Col nm x)     =
   Just $ case x of
-    RGB red green blue    => #"\#{nm}="rgb(\{show r} \{show g} \{show b}})" \{opac nm 1.perc}"#
-    RGBA red green blue y => #"\#{nm}="rgb(\{show r} \{show g} \{show b}})" \{opac nm y}"#
-    Key str               => #"\#{nm}="\{str}" \{opac nm 1.perc}"#
+    RGB r g b    => #"\#{nm}="rgb(\#{show r} \#{show g} \#{show b})" \#{opac nm 100.perc}"#
+    RGBA r g b y => #"\#{nm}="rgb(\#{show r} \#{show g} \#{show b})" \#{opac nm y}"#
+    Key str      => #"\#{nm}="\#{str}" \#{opac nm 100.perc}"#
 
 export
 displayAttributes : {0 s : _} -> List (SVGAttribute s) -> String
