@@ -1,5 +1,6 @@
 module Text.SVG.Types
 
+import Data.Bits
 import Derive.Prelude
 import public Data.Refined
 
@@ -109,19 +110,41 @@ export %inline
 --          SVGColor
 --------------------------------------------------------------------------------
 
+hexc : Bits8 -> Char
+hexc 0  = '0'
+hexc 1  = '1'
+hexc 2  = '2'
+hexc 3  = '3'
+hexc 4  = '4'
+hexc 5  = '5'
+hexc 6  = '6'
+hexc 7  = '7'
+hexc 8  = '8'
+hexc 9  = '9'
+hexc 10 = 'a'
+hexc 11 = 'b'
+hexc 12 = 'c'
+hexc 13 = 'd'
+hexc 14 = 'e'
+hexc _  = 'f'
+
+hex : Bits8 -> List Char
+hex b = [hexc $ shiftR b 4, hexc $ b .&. 0xf]
+
 public export
 data SVGColor : Type where
   RGB  : (red,green,blue : Bits8) -> SVGColor
   RGBA : (red,green,blue : Bits8) -> Percentage -> SVGColor
   Key  : String -> SVGColor
 
--- export
--- Interpolation SVGColor where
---   interpolate (RGB r g b) = "rgba(\{show r} \{show g} \{show b}})"
---   interpolate (Key s)     = s
---
--- export
--- Show SVGColor where show = interpolate
+export
+Interpolation SVGColor where
+  interpolate (RGB r g b)    = fastPack $ '#' :: hex r ++ hex g ++ hex b
+  interpolate (RGBA r g b a) = "rgba(\{show r} \{show g} \{show b} \{a})"
+  interpolate (Key s)        = s
+
+export
+Show SVGColor where show = interpolate
 
 --------------------------------------------------------------------------------
 --          Length
