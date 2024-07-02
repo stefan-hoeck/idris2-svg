@@ -15,9 +15,9 @@ public export
 data SVGAttribute : (s : String) -> Type where
   Id     : {0 s : _} -> String -> SVGAttribute s
   Str    : {0 s : _} -> (name,val : String) -> SVGAttribute s
+  Style  : {0 s : _} -> (name,val : String) -> SVGAttribute s
   Bool   : {0 s : _} -> (name : String) -> Bool -> SVGAttribute s
   LOP    : {0 s : _} -> (name : String) -> LengthOrPercentage -> SVGAttribute s
-  Col    : {0 s : _} -> (name : String) -> SVGColor -> SVGAttribute s
   Perc   : {0 s : _} -> (name : String) -> Percentage -> SVGAttribute s
   Pth    : {0 s : _} -> (name : String) -> List PathCmd -> SVGAttribute s
   Points : {0 s : _} -> (name : String) -> List Double -> SVGAttribute s
@@ -26,26 +26,30 @@ data SVGAttribute : (s : String) -> Type where
 opac : String -> Percentage -> String
 opac s p = #"\#{s}-opacity="\#{p}""#
 
-export
-displayAttribute : {0 s : _} -> SVGAttribute s -> Maybe String
-displayAttribute (Id va)        = Just #"id="\#{va}""#
-displayAttribute (Str nm va)    = Just #"\#{nm}="\#{va}""#
-displayAttribute (LOP nm va)    = Just #"\#{nm}="\#{va}""#
-displayAttribute (Perc nm va)   = Just #"\#{nm}="\#{va}""#
-displayAttribute (Pth nm va)    = Just #"\#{nm}="\#{unwords $ map interpolate va}""#
-displayAttribute (Points nm va) = Just #"\#{nm}="\#{unwords $ map renderDouble va}""#
-displayAttribute (Bool nm True) = Just nm
-displayAttribute (Bool _ False) = Nothing
-displayAttribute Empty          = Nothing
-displayAttribute (Col nm x)     =
-  Just $ case x of
-    RGB r g b    => #"\#{nm}="rgb(\#{show r} \#{show g} \#{show b})" \#{opac nm 100.perc}"#
-    RGBA r g b y => #"\#{nm}="rgb(\#{show r} \#{show g} \#{show b})" \#{opac nm y}"#
-    Key str      => #"\#{nm}="\#{str}" \#{opac nm 100.perc}"#
+displayAttribute : {0 s : _} -> SVGAttribute s -> String
+displayAttribute (Id va)        = #"id="\#{va}""#
+displayAttribute (Str nm va)    = #"\#{nm}="\#{va}""#
+displayAttribute (LOP nm va)    = #"\#{nm}="\#{va}""#
+displayAttribute (Perc nm va)   = #"\#{nm}="\#{va}""#
+displayAttribute (Pth nm va)    = #"\#{nm}="\#{unwords $ map interpolate va}""#
+displayAttribute (Points nm va) = #"\#{nm}="\#{unwords $ map renderDouble va}""#
+displayAttribute (Bool nm True) = nm
+displayAttribute (Bool _ False) = ""
+displayAttribute Empty          = ""
+displayAttribute (Style nm va)  = "\{nm}:\{va};"
 
 export
 displayAttributes : {0 s : _} -> List (SVGAttribute s) -> String
-displayAttributes = fastConcat . intersperse " " . mapMaybe displayAttribute
+displayAttributes = go [<] [<]
+  where
+    go : SnocList String -> SnocList String -> List (SVGAttribute f) -> String
+    go [<] attrs    [] = unwords (attrs <>> [])
+    go styles attrs [] =
+      unwords (attrs <>> [fastConcat $ "style=\"" :: (styles <>> ["\""])])
+    go styles attrs (x::xs) =
+      case x of
+        Style n v => go (styles :< "\{n}:\{v};") attrs xs
+        _         => go styles (attrs :< displayAttribute x) xs
 
 --------------------------------------------------------------------------------
 -- Predefine Attributes
@@ -84,6 +88,12 @@ xmlns_2000 : SVGAttribute "svg"
 xmlns_2000 = xmlns "http://www.w3.org/2000/svg"
 
 parameters {0 s : String}
+
+  svgCol : String -> SVGColor -> SVGAttribute s
+  svgCol n c =
+    case c of
+      RGBA r g b a => Style n "\{RGB r g b};\{n}-opacity:\{show $ a.value / 100.0}"
+      _            => Style n (interpolate c)
 
   export %inline
   transform : Transform -> SVGAttribute s
@@ -159,27 +169,27 @@ parameters {0 s : String}
 
   export %inline
   fill : (0 p : HasFill s) => SVGColor -> SVGAttribute s
-  fill = Col "fill"
+  fill = svgCol "fill"
 
   export %inline
   fillOpacity : (0 p : HasFill s) => Percentage -> SVGAttribute s
-  fillOpacity = Perc "fill-opacity"
+  fillOpacity = Style "fill-opacity" . interpolate
 
   export %inline
   stroke : (0 p : HasStroke s) => SVGColor -> SVGAttribute s
-  stroke = Col "stroke"
+  stroke = svgCol "stroke"
 
   export %inline
   strokeLinecap : (0 p : HasStroke s) => StrokeLinecap -> SVGAttribute s
-  strokeLinecap = Str "stroke-linecap" . interpolate
+  strokeLinecap = Style "stroke-linecap" . interpolate
 
   export %inline
   strokeLinejoin : (0 p : HasStroke s) => StrokeLinejoin -> SVGAttribute s
-  strokeLinejoin = Str "stroke-linejoin" . interpolate
+  strokeLinejoin = Style "stroke-linejoin" . interpolate
 
   export %inline
   strokeOpacity : (0 p : HasStroke s) => Percentage -> SVGAttribute s
-  strokeOpacity = Perc "stroke-opacity"
+  strokeOpacity = Style "stroke-opacity" . interpolate
 
   export %inline
   width : (0 prf : HasWidth s) => LengthOrPercentage -> SVGAttribute s
@@ -191,7 +201,7 @@ parameters {0 s : String}
 
   export %inline
   strokeWidth : (0 p : HasStroke s) => LengthOrPercentage -> SVGAttribute s
-  strokeWidth = LOP "stroke-width"
+  strokeWidth = Style "stroke-width" . interpolate
 
   export
   points : (0 p : HasPoints s) => List Double -> SVGAttribute s
@@ -206,23 +216,23 @@ parameters {0 s : String}
 
   export %inline
   dominantBaseline : (0 p : IsText s) => DominantBaseline -> SVGAttribute s
-  dominantBaseline = Str "dominant-baseline" . interpolate
+  dominantBaseline = Style "dominant-baseline" . interpolate
 
   export %inline
   textAnchor : (0 p : IsText s) => TextAnchor -> SVGAttribute s
-  textAnchor = Str "text-anchor" . interpolate
+  textAnchor = Style "text-anchor" . interpolate
 
   export %inline
   font : (0 p : IsText s) => String -> SVGAttribute s
-  font = Str "font"
+  font = Style "font"
 
   export %inline
   fontFamily : (0 p : IsText s) => String -> SVGAttribute s
-  fontFamily = Str "font-family"
+  fontFamily = Style "font-family"
 
   export %inline
   fontWeight : (0 p : IsText s) => FontWeight -> SVGAttribute s
-  fontWeight = Str "font-weight" . interpolate
+  fontWeight = Style "font-weight" . interpolate
 
   export %inline
   lengthAdjust : (0 p : IsText s) => LengthAdjust -> SVGAttribute s
@@ -242,4 +252,4 @@ parameters {0 s : String}
 
   export %inline
   fontSize : (0 p : IsText s) => LengthOrPercentage -> SVGAttribute s
-  fontSize = LOP "font-size"
+  fontSize = Style "font-size" . interpolate
