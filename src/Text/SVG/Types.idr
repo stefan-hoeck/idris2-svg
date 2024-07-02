@@ -259,7 +259,7 @@ digit True  = "1"
 export
 Interpolation PathCmd where
   interpolate (Move rel x y) = letter rel "M" "m" ++ "\{x} \{y}"
-  interpolate (Line rel x y) = letter rel "M" "m" ++ "\{x} \{y}"
+  interpolate (Line rel x y) = letter rel "L" "l" ++ "\{x} \{y}"
   interpolate (Horiz rel x)  = letter rel "H" "h" ++ "\{x}"
   interpolate (Vert rel y)   = letter rel "V" "v" ++ "\{y}"
   interpolate Z              = "Z"
