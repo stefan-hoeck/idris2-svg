@@ -204,6 +204,14 @@ parameters {0 s : String}
   strokeWidth = Style "stroke-width" . interpolate
 
   export
+  strokeDasharray : (0 p : HasStroke s) => List Double -> SVGAttribute s
+  strokeDasharray = Style "stroke-dasharray" . unwords . map renderDouble
+
+  export
+  strokeDashoffset : (0 p : HasStroke s) => Double -> SVGAttribute s
+  strokeDashoffset = Style "stroke-dashoffset" . renderDouble
+
+  export
   points : (0 p : HasPoints s) => List Double -> SVGAttribute s
   points = Points "points"
 
